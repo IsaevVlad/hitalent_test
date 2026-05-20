@@ -1,0 +1,79 @@
+# Generated manually for initial models
+
+import django.db.models.deletion
+from django.db import migrations, models
+
+
+class Migration(migrations.Migration):
+
+    initial = True
+
+    dependencies = []
+
+    operations = [
+        migrations.CreateModel(
+            name="Department",
+            fields=[
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=200)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "parent",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="children",
+                        to="departments.department",
+                    ),
+                ),
+            ],
+            options={
+                "ordering": ["name"],
+            },
+        ),
+        migrations.CreateModel(
+            name="Employee",
+            fields=[
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("full_name", models.CharField(max_length=200)),
+                ("position", models.CharField(max_length=200)),
+                ("hired_at", models.DateField(blank=True, null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "department",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="employees",
+                        to="departments.department",
+                    ),
+                ),
+            ],
+            options={
+                "ordering": ["full_name"],
+            },
+        ),
+        migrations.AddConstraint(
+            model_name="department",
+            constraint=models.UniqueConstraint(
+                fields=("parent", "name"),
+                name="unique_department_name_per_parent",
+            ),
+        ),
+    ]
